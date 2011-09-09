@@ -107,17 +107,17 @@ module Scrabble
       end
 
       it "should be able to use a start_with argument successfully" do
-        words = `#{executable} geg --starts-with eg`.split(/\n/)
+        words = `#{executable} g --starts-with eg`.split(/\n/)
         words.should include "egg"
       end
 
       it "should be able to use an ends_with argument successfully" do
-        words = `#{executable} pngi --ends-with ing`.split(/\n/)
+        words = `#{executable} spsi --ends-with ng`.split(/\n/)
         words.should include "ping"
       end
 
       it "should be able to use a combination of starts_with and ends_with" do
-        words = `#{executable} crcak --starts-with cr --ends-with k`.split(/\n/)
+        words = `#{executable} apcz --starts-with cr --ends-with k`.split(/\n/)
         words.should include "crack"
       end
 
@@ -153,7 +153,7 @@ module Scrabble
 
       it "should be able to return only words that have a specific letter at " +
         "a given index" do
-        words = `#{executable} diegtlkwj --contains i --at 2`.split(/\n/)
+        words = `#{executable} degtlkwj --contains i --at 2`.split(/\n/)
         words.each do |word|
           word[1].should == "i"
         end
@@ -170,6 +170,12 @@ module Scrabble
 
         # Ensure that some words were actually checked in the above loop.
         words.length.should be > 0, "No words scanned."
+      end
+      
+      it "should be able to return words that contain a sequence at any position" do
+        words = `#{executable} pers --contains li`.split(/\n/)
+        words.should include "pliers"
+        words.should include "lisp"
       end
 
       it "should be able to take a new word file if specified" do

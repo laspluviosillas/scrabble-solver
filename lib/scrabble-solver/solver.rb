@@ -52,9 +52,14 @@ module Scrabble
     #   # => An array of words that the tiles t, h, e, r, e plus a blank tile
     #   #    could make.
     def self.words_for letters, options = Hash.new(nil)
-      letters  = letters.downcase.split(//)
+      letters  = letters.downcase.chars.to_a
       unknowns = letters.count "?"
       letters.delete "?"
+      
+      # Add letters from options to the letter pool for word searching.
+      letters = letters + options[:starts_with].chars.to_a if options[:starts_with]
+      letters = letters + options[:ends_with].chars.to_a   if options[:ends_with]
+      letters = letters + options[:contains].chars.to_a    if options[:contains]
 
       # Set a new word file if the option has been specified
       if options[:word_file]
@@ -63,11 +68,11 @@ module Scrabble
 
       words = word_list.keep_if do |word|
         # Split the word into its letters.
-        word = word.split(//)
+        word = word.chars.to_a
 
         # Strip the letters that are in our hand from the word.
         letters.each do |letter|
-          unless word.index(letter).nil?
+          if word.index(letter)
             word.delete_at word.index(letter)
           end
         end
@@ -76,7 +81,7 @@ module Scrabble
         # of unknowns.
         word.length == unknowns
       end
-
+      
       # Filter only words that start with a specific sequence.
       if options[:starts_with]
         words.keep_if { |word| word.start_with? options[:starts_with] }
@@ -97,10 +102,17 @@ module Scrabble
         words.keep_if { |word| word.length > options[:longer_than].to_i }
       end
 
-      # Filter words that contain a specific sequence at a given 1-based index.
-      if options[:contains] and options[:at]
+      
+      if options[:contains]
         words.keep_if do |word|
-          word[options[:at].to_i - 1, options[:contains].length] == options[:contains]
+          # If 'at' is specified, filter words that contain a specific sequence 
+          # at a given 1-based index. Else, filter words that contain a specific 
+          # sequence at - any - position.
+          if options[:at]            
+            word[options[:at].to_i - 1, options[:contains].length] == options[:contains]
+          else
+            word.scan(options[:contains]).any?
+          end            
         end
       end
 

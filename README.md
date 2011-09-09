@@ -40,11 +40,11 @@ You can, of course, combine these if you want:
 This is pretty self explanatory. If you only want words that start with "th",
 you would do something like this:
 
-    $ scrabble-solver tehre --starts-with th
+    $ scrabble-solver ree --starts-with th
 
 And the same goes for ends-with:
 
-    $ scrabble-solver tehre --ends-with re
+    $ scrabble-solver teh --ends-with re
 
 ## Blank tiles (wildcards)
 
@@ -61,11 +61,15 @@ will register fine wherever you put them and you can have as many as you want.
 Say you've got a really sweet triple letter lined up that will only work if
 your Z is the first letter in the word, check this out:
 
-    $ scrabble-solver zloogsti --contains z --at 1
+    $ scrabble-solver loogsti --contains z --at 1
 
-The `--contains` and `--at` flags must be used in conjunction. They will not
-do anything if used separately. They will only return words that have the
-specified pattern at the specified location.
+The `--contains` flag works without the `--at` flag as well (but not vice versa).
+If you want to search for a word that contains a specific sequence of letters at
+any position, use `--contains` without specifing `--at`.
+
+    $ scrabble-solver pers --contains li
+
+Returns words like 'lisp' and 'pliers'.
 
 # Word lists
 
